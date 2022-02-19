@@ -1,16 +1,59 @@
 import java.util.*;
 
-public class AddressesBook {
-    HashMap<String, ArrayList<String>> membersList = new HashMap<String, ArrayList<String>>();
-    private String name, street, house, flat;
+public final class AddressesBook {
+    public static HashMap<String, ArrayList<String>> membersList = new HashMap<String, ArrayList<String>>();
+    private String name;
+
+    static class Address {
+        private String street, house, flat;
+
+        Address(String street, String house, String flat) {
+            this.street = street;
+            this.house = house;
+            this.flat = flat;
+        }
+
+        public ArrayList<String> getAddress() {
+            ArrayList<String> address = new ArrayList<String>();
+            address.add(street);
+            address.add(house);
+            address.add(flat);
+            return address;
+        }
+
+        @Override
+        public String toString() {
+            return street + ", " + house + ", " + flat + ".";
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+
+        public String getHouse() {
+            return house;
+        }
+
+        public void setHouse(String house) {
+            this.house = house;
+        }
+
+        public String getFlat() {
+            return flat;
+        }
+
+        public void setFlat(String flat) {
+            this.flat = flat;
+        }
+    }
 
 
-    public void addMember(String name, String street, String house, String flat) {
-        ArrayList<String> address = new ArrayList<String>();
-        address.add(street);
-        address.add(house);
-        address.add(flat);
-        membersList.put(name, address);
+    public void addMember(String name, Address address) {
+        membersList.put(name, address.getAddress());
     }
 
     public void removeMember(String name) {
@@ -21,13 +64,9 @@ public class AddressesBook {
         }
     }
 
-    public void changeAddress(String name, String street, String house, String flat) {
+    public void changeAddress(String name, Address newAddress) {
         if (membersList.containsKey(name)) {
-            ArrayList<String> newAddress = new ArrayList<String>();
-            newAddress.add(street);
-            newAddress.add(house);
-            newAddress.add(flat);
-            membersList.put(name, newAddress);
+            membersList.put(name, newAddress.getAddress());
         } else {
             throw new IllegalArgumentException("This name isn't member");
         }
@@ -106,30 +145,6 @@ public class AddressesBook {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getHouse() {
-        return house;
-    }
-
-    public void setHouse(String house) {
-        this.house = house;
-    }
-
-    public String getFlat() {
-        return flat;
-    }
-
-    public void setFlat(String flat) {
-        this.flat = flat;
     }
 
     @Override
