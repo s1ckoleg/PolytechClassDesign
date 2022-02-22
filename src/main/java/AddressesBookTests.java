@@ -1,5 +1,11 @@
+import Books.AddressesBook;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import Books.AddressesBook.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AddressesBookTests {
     AddressesBook.Address address1 = new AddressesBook.Address("Mendeleeva", "2", "28");
@@ -48,7 +54,7 @@ public class AddressesBookTests {
         classInstance.addMember("Petya", address1);
         classInstance.addMember("Vasya", address2);
         assertEquals(
-                "Vasya address is Polytechnicheskaya, 8, 4.",
+                address2.toString(),
                 classInstance.getAddress("Vasya")
         );
     }
@@ -56,10 +62,11 @@ public class AddressesBookTests {
     @Test
     void getMemberByStreet() {
         AddressesBook classInstance = new AddressesBook();
+        List<String> suitableMembers = Arrays.asList("Petya");
         classInstance.addMember("Petya", address1);
         classInstance.addMember("Vasya", address2);
         assertEquals(
-                "People on Mendeleeva street: Petya.",
+                suitableMembers,
                 classInstance.getMemberByStreet("Mendeleeva")
         );
     }
@@ -67,10 +74,11 @@ public class AddressesBookTests {
     @Test
     void getMemberByStreetAndHouse() {
         AddressesBook classInstance = new AddressesBook();
+        List<String> suitableMembers = Arrays.asList("Petya");
         classInstance.addMember("Petya", address1);
         classInstance.addMember("Vasya", address2);
         assertEquals(
-                "People on Mendeleeva street and 2 house: Petya.",
+                suitableMembers,
                 classInstance.getMemberByStreetAndHouse("Mendeleeva", "2")
         );
     }
