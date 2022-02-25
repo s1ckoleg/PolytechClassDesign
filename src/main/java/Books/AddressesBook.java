@@ -3,12 +3,15 @@ import java.util.*;
 
 public class AddressesBook {
     public HashMap<String, Address> membersList = new HashMap<>();
-    final static String missingMemberError = "Can't find this member";
+    final static String missingMemberError = "Can't find suitable member";
+    final static String illegalNameError = "Name contains illegal symbols";
+    final static String illegalStreetError = "Street contains illegal symbols";
 
     public static class Address {
-        private String street, house, flat;
+        private String street;
+        private Integer house, flat;
 
-        public Address(String street, String house, String flat) {
+        public Address(String street, Integer house, Integer flat) {
             this.street = street;
             this.house = house;
             this.flat = flat;
@@ -45,26 +48,41 @@ public class AddressesBook {
             this.street = street;
         }
 
-        public String getHouse() {
+        public Integer getHouse() {
             return house;
         }
 
-        public void setHouse(String house) {
+        public void setHouse(Integer house) {
             this.house = house;
         }
 
-        public String getFlat() {
+        public Integer getFlat() {
             return flat;
         }
 
-        public void setFlat(String flat) {
+        public void setFlat(Integer flat) {
             this.flat = flat;
         }
     }
 
+    public Boolean wordCheck(String word) {
+        List<String> invalidCharacters = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
+        for (String character:invalidCharacters) {
+            if (word.contains(character)) {
+                return Boolean.FALSE;
+            }
+        }
+        return Boolean.TRUE;
+    }
 
     public void addMember(String name, Address address) {
-        membersList.put(name, address.getAddress());
+        if (wordCheck(name) == Boolean.FALSE) {
+            throw new IllegalArgumentException(illegalNameError);
+        } else if (wordCheck(address.street) == Boolean.FALSE) {
+            throw new IllegalArgumentException(illegalStreetError);
+        } else {
+            membersList.put(name, address.getAddress());
+        }
     }
 
     public void removeMember(String name) {
@@ -87,7 +105,7 @@ public class AddressesBook {
         if (membersList.containsKey(name)) {
             return membersList.get(name).toString();
         } else {
-            return "Can't find this member in book :(";
+            return "";
         }
     }
 
@@ -102,7 +120,7 @@ public class AddressesBook {
         return suitableMembers;
     }
 
-    public List<String> getMemberByStreetAndHouse(String street, String house) {
+    public List<String> getMemberByStreetAndHouse(String street, Integer house) {
         ArrayList<String> suitableMembers = new ArrayList<>();
         for (Map.Entry<String, Address> entry : membersList.entrySet()) {
             if (Objects.equals(entry.getValue().street, street) && Objects.equals(entry.getValue().house, house)) {
