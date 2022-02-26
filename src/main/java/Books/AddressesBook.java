@@ -3,6 +3,7 @@ import java.util.*;
 
 public class AddressesBook {
     public HashMap<String, Address> membersList = new HashMap<>();
+
     final static String missingMemberError = "Can't find suitable member";
     final static String illegalNameError = "Name contains illegal symbols";
     final static String illegalStreetError = "Street contains illegal symbols";
@@ -66,7 +67,7 @@ public class AddressesBook {
     }
 
     public Boolean wordCheck(String word) {
-        List<String> invalidCharacters = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
+        List<String> invalidCharacters = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ":", "!", "?");
         for (String character:invalidCharacters) {
             if (word.contains(character)) {
                 return Boolean.FALSE;
