@@ -8,6 +8,7 @@ import static books.Errors.*;
 
 public class AddressesBook {
     private final Map<String, Address> members = new HashMap<>(); // поменять имя, поменять public
+    private static final Pattern checkWordPattern = Pattern.compile("[0-9:?;!]");
 
     public static class Address {
         private String street;
@@ -27,6 +28,10 @@ public class AddressesBook {
                 throw new BadValueException(ILLEGAL_HOUSE_ERROR.getMessage());
             } else {
                 this.house = house;
+            }
+
+            if (wordCheck(street)) {
+                throw new BadValueException(ILLEGAL_STREET_ERROR.getMessage());
             }
 
             if (flat == null) {
@@ -62,32 +67,44 @@ public class AddressesBook {
         }
 
         public void setStreet(String street) {
-            this.street = street;
+            if (street == null) {
+                throw new NullPointerException(ILLEGAL_STREET_ERROR.getMessage());
+            } else {
+                this.street = street;
+            }
         }
 
         public Integer getHouse() {
             return house;
         }
 
-        public void setHouse(Integer house) {
-            this.house = house;
+        public void setHouse(Integer house) throws BadValueException {
+            if (house == null) {
+                throw new NullPointerException(ILLEGAL_HOUSE_ERROR.getMessage());
+            } else if (house <= 0) {
+                throw new BadValueException(ILLEGAL_HOUSE_ERROR.getMessage());
+            } else {
+                this.house = house;
+            }
         }
 
         public Integer getFlat() {
             return flat;
         }
 
-        public void setFlat(Integer flat) {
-            this.flat = flat;
+        public void setFlat(Integer flat) throws BadValueException {
+            if (flat == null) {
+                throw new NullPointerException(ILLEGAL_FLAT_ERROR.getMessage());
+            } else if (flat <= 0) {
+                throw new BadValueException(ILLEGAL_FLAT_ERROR.getMessage());
+            } else {
+                this.flat = flat;
+            }
         }
     }
 
-    public boolean wordCheck(String word) { // regex, типы данных, переработать
-
-        String regex = "[0-9:?;!]";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(word);
-
+    private static boolean wordCheck(String word) { // regex, типы данных, переработать
+        Matcher matcher = checkWordPattern.matcher(word);
         return matcher.find();
     }
 
@@ -98,30 +115,31 @@ public class AddressesBook {
 
         if (wordCheck(name)) {
             throw new BadValueException(ILLEGAL_NAME_ERROR.getMessage());
-        } else if (wordCheck(address.street)) {
-            throw new BadValueException(ILLEGAL_STREET_ERROR.getMessage());
+        }
+
+        if (members.containsKey(name)) {
+            return false;
         } else {
             members.put(name, address);
             return true;
         }
     }
 
-    public boolean removeMember(String name) throws BadValueException { // возвращать буленовское значение
+    public boolean removeMember(String name) { // возвращать буленовское значение
         if (members.containsKey(name)) {
             members.remove(name);
             return true;
         } else {
-            // throw new IllegalArgumentException(MISSING_MEMBER_ERROR); // checked/unchecked (answer: checked)
-            throw new BadValueException(MISSING_MEMBER_ERROR.getMessage());
+            return false;
         }
     }
 
-    public boolean changeAddress(String name, Address newAddress) throws BadValueException { // возвращать буленовское значение
+    public boolean changeAddress(String name, Address newAddress) { // возвращать буленовское значение
         if (members.containsKey(name)) {
             members.put(name, newAddress);
             return true;
         } else {
-            throw new BadValueException(MISSING_MEMBER_ERROR.getMessage());
+            return false;
         }
     }
 
@@ -129,7 +147,7 @@ public class AddressesBook {
         return members.getOrDefault(name, null); // идея предложила заменить тернарный оператор, на это
     }
 
-    public Set<String> getMemberByStreet(String street) {
+    public Set<String> getMemberListByStreet(String street) {
         // используем сет, так как нам не важна упорядоченность элементов и доступ по индексам
         Set<String> suitableMembers = new HashSet<>();
 
@@ -142,7 +160,7 @@ public class AddressesBook {
         return suitableMembers;
     }
 
-    public Set<String> getMemberByStreetAndHouse(String street, Integer house) {
+    public Set<String> getMemberListByStreetAndHouse(String street, Integer house) {
         // используем сет, так как нам не важна упорядоченность элементов и доступ по индексам
         Set<String> suitableMembers = new HashSet<>();
         for (Map.Entry<String, Address> entry : members.entrySet()) {

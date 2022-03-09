@@ -24,11 +24,17 @@ public class AddressesBookTests {
     }
 
     @Test
-    void addMember() {
-        assertEquals("Petya address is Mendeleeva, 2, 28.\nVasya address is Polytechnicheskaya, 8, 4.\n",
-                addressBook.toString()
-        );
+    void addMember() throws BadValueException {
+        AddressesBook comparativeAddressBook = new AddressesBook();
+        comparativeAddressBook.addMember("Petya", address1);
+        comparativeAddressBook.addMember("Vasya", address2);
 
+        assertEquals(comparativeAddressBook, addressBook);
+    }
+
+    @Test
+    void duplicateNameAddMember() throws BadValueException {
+        assertFalse(addressBook.addMember("Petya", address1));
     }
 
     @Test
@@ -51,9 +57,8 @@ public class AddressesBookTests {
     }
 
     @Test
-    void illegalStreetAddMember() throws BadValueException {
-        AddressesBook.Address newAddress = new AddressesBook.Address("Mendeleeva!", 2, 28);
-        Throwable exception = assertThrows(BadValueException.class, () -> addressBook.addMember("Petya", newAddress));
+    void illegalStreetAddMember() {
+        Throwable exception = assertThrows(BadValueException.class, () -> addressBook.addMember("Petya", new AddressesBook.Address("Mendeleeva!", 2, 28)));
         assertEquals(ILLEGAL_STREET_ERROR.getMessage(), exception.getMessage());
     }
 
@@ -87,35 +92,34 @@ public class AddressesBookTests {
 
     @Test
     void removeMember() throws BadValueException {
+        AddressesBook comparativeAddressBook = new AddressesBook();
+        comparativeAddressBook.addMember("Vasya", address2);
         addressBook.removeMember("Petya");
-        assertEquals(
-                "Vasya address is Polytechnicheskaya, 8, 4.\n",
-                addressBook.toString()
-        );
+
+        assertEquals(comparativeAddressBook, addressBook);
     }
 
     @Test
     void nonExistentRemoveMemeber() {
-        Throwable exception = assertThrows(BadValueException.class, () -> addressBook.removeMember("Anonymous"));
-        assertEquals(MISSING_MEMBER_ERROR.getMessage(), exception.getMessage());
+        assertFalse(addressBook.removeMember("Anonymous"));
     }
 
     @Test
     void changeAddress() throws BadValueException {
         AddressesBook.Address newAddress = new AddressesBook.Address("Dibenko", 228, 1337);
+
+        AddressesBook comparativeAddressBook = new AddressesBook();
+        comparativeAddressBook.addMember("Petya", newAddress);
+        comparativeAddressBook.addMember("Vasya", address2);
         addressBook.changeAddress("Petya", newAddress);
 
-        assertEquals(
-                "Petya address is Dibenko, 228, 1337.\nVasya address is Polytechnicheskaya, 8, 4.\n",
-                addressBook.toString()
-        );
+        assertEquals(comparativeAddressBook, addressBook);
     }
 
     @Test
     void nonExistentChangeAddress() throws BadValueException {
         AddressesBook.Address newAddress = new AddressesBook.Address("Dibenko", 228, 1337);
-        Throwable exception = assertThrows(BadValueException.class, () -> addressBook.changeAddress("Anonymous", newAddress));
-        assertEquals(MISSING_MEMBER_ERROR.getMessage(), exception.getMessage());
+        assertFalse(addressBook.changeAddress("Anonymous", newAddress));
     }
 
     @Test
@@ -133,19 +137,61 @@ public class AddressesBookTests {
 
     @Test
     void getMemberByStreet() { // более сложные тесты
-        Set<String> suitableMembers = new HashSet<>(Arrays.asList("Petya"));
+        Set<String> suitableMembers = new HashSet<>(Set.of("Petya"));
         assertEquals(
                 suitableMembers,
-                addressBook.getMemberByStreet("Mendeleeva")
+                addressBook.getMemberListByStreet("Mendeleeva")
         );
     }
 
     @Test
     void getMemberByStreetAndHouse() {
-        Set<String> suitableMembers = new HashSet<>(Arrays.asList("Petya"));
+        Set<String> suitableMembers = new HashSet<>(Set.of("Petya"));
         assertEquals(
                 suitableMembers,
-                addressBook.getMemberByStreetAndHouse("Mendeleeva", 2)
+                addressBook.getMemberListByStreetAndHouse("Mendeleeva", 2)
         );
+    }
+
+    @Test
+    void setters() throws BadValueException {
+        address1.setStreet("Mira");
+        assertEquals("Mira", address1.getStreet());
+
+        address1.setHouse(100);
+        assertEquals(100, address1.getHouse());
+
+        address1.setFlat(1000);
+        assertEquals(1000, address1.getFlat());
+    }
+
+    @Test
+    void setNullStreet() {
+        Throwable exception = assertThrows(NullPointerException.class, () -> address1.setStreet(null));
+        assertEquals(ILLEGAL_STREET_ERROR.getMessage(), exception.getMessage());
+    }
+
+    @Test
+    void setNullHouse() {
+        Throwable exception = assertThrows(NullPointerException.class, () -> address1.setHouse(null));
+        assertEquals(ILLEGAL_HOUSE_ERROR.getMessage(), exception.getMessage());
+    }
+
+    @Test
+    void setIllegalHouse() {
+        Throwable exception = assertThrows(BadValueException.class, () -> address1.setHouse(-1));
+        assertEquals(ILLEGAL_HOUSE_ERROR.getMessage(), exception.getMessage());
+    }
+
+    @Test
+    void setNullFlat() {
+        Throwable exception = assertThrows(NullPointerException.class, () -> address1.setFlat(null));
+        assertEquals(ILLEGAL_FLAT_ERROR.getMessage(), exception.getMessage());
+    }
+
+    @Test
+    void setIllegalFlat() {
+        Throwable exception = assertThrows(BadValueException.class, () -> address1.setFlat(0));
+        assertEquals(ILLEGAL_FLAT_ERROR.getMessage(), exception.getMessage());
     }
 }
