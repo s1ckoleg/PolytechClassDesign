@@ -8,7 +8,7 @@ import java.util.*;
 import static books.Errors.*;
 
 public class AddressesBookTests {
-    AddressesBook addressBook = new AddressesBook(); // rename
+    AddressesBook addressBook = new AddressesBook();
 
     AddressesBook.Address address1 = new AddressesBook.Address("Mendeleeva", 2, 28);
     AddressesBook.Address address2 = new AddressesBook.Address("Polytechnicheskaya", 8, 4);
@@ -124,10 +124,7 @@ public class AddressesBookTests {
 
     @Test
     void getAddress() {
-        assertEquals(
-                address2,
-                addressBook.getAddress("Vasya")
-        );
+        assertEquals(address2, addressBook.getAddress("Vasya"));
     }
 
     @Test
@@ -136,7 +133,7 @@ public class AddressesBookTests {
     }
 
     @Test
-    void getMemberByStreet() { // более сложные тесты
+    void getMemberByStreet() {
         Set<String> suitableMembers = new HashSet<>(Set.of("Petya"));
         assertEquals(
                 suitableMembers,

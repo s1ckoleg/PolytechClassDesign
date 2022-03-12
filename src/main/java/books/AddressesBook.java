@@ -1,4 +1,4 @@
-package books; // с маленькой
+package books;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -7,14 +7,14 @@ import java.util.regex.Pattern;
 import static books.Errors.*;
 
 public class AddressesBook {
-    private final Map<String, Address> members = new HashMap<>(); // поменять имя, поменять public
+    private final Map<String, Address> members = new HashMap<>();
     private static final Pattern checkWordPattern = Pattern.compile("[0-9:?;!]");
 
     public static class Address {
         private String street;
         private Integer house, flat;
 
-        public Address(String street, Integer house, Integer flat) throws BadValueException { // проверки на корректность
+        public Address(String street, Integer house, Integer flat) throws BadValueException {
 
             if (street == null) {
                 throw new NullPointerException(ILLEGAL_STREET_ERROR.getMessage());
@@ -103,12 +103,12 @@ public class AddressesBook {
         }
     }
 
-    private static boolean wordCheck(String word) { // regex, типы данных, переработать
+    private static boolean wordCheck(String word) {
         Matcher matcher = checkWordPattern.matcher(word);
         return matcher.find();
     }
 
-    public boolean addMember(String name, Address address) throws BadValueException { // возвращать буленовское значение, проверить null
+    public boolean addMember(String name, Address address) throws BadValueException {
         if (name == null) {
             throw new NullPointerException(ILLEGAL_NAME_ERROR.getMessage());
         }
@@ -125,7 +125,7 @@ public class AddressesBook {
         }
     }
 
-    public boolean removeMember(String name) { // возвращать буленовское значение
+    public boolean removeMember(String name) {
         if (members.containsKey(name)) {
             members.remove(name);
             return true;
@@ -134,7 +134,7 @@ public class AddressesBook {
         }
     }
 
-    public boolean changeAddress(String name, Address newAddress) { // возвращать буленовское значение
+    public boolean changeAddress(String name, Address newAddress) {
         if (members.containsKey(name)) {
             members.put(name, newAddress);
             return true;
@@ -143,12 +143,11 @@ public class AddressesBook {
         }
     }
 
-    public Address getAddress(String name) { // тернарный оператор
-        return members.getOrDefault(name, null); // идея предложила заменить тернарный оператор, на это
+    public Address getAddress(String name) {
+        return members.getOrDefault(name, null);
     }
 
     public Set<String> getMemberListByStreet(String street) {
-        // используем сет, так как нам не важна упорядоченность элементов и доступ по индексам
         Set<String> suitableMembers = new HashSet<>();
 
         for (Map.Entry<String, Address> entry : members.entrySet()) {
@@ -161,7 +160,6 @@ public class AddressesBook {
     }
 
     public Set<String> getMemberListByStreetAndHouse(String street, Integer house) {
-        // используем сет, так как нам не важна упорядоченность элементов и доступ по индексам
         Set<String> suitableMembers = new HashSet<>();
         for (Map.Entry<String, Address> entry : members.entrySet()) {
             if (Objects.equals(entry.getValue().street, street) && Objects.equals(entry.getValue().house, house)) {
@@ -169,7 +167,7 @@ public class AddressesBook {
             }
         }
 
-        return suitableMembers; // set or list
+        return suitableMembers;
     }
 
     @Override

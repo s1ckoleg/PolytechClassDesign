@@ -1,11 +1,10 @@
 package books;
 
 public enum Errors {
-    MISSING_MEMBER_ERROR("Can't find suitable member"),
     ILLEGAL_NAME_ERROR("Incorrect name"),
     ILLEGAL_STREET_ERROR("Incorrect street"),
     ILLEGAL_HOUSE_ERROR("Incorrect house"),
-    ILLEGAL_FLAT_ERROR("Flat value is illegal");
+    ILLEGAL_FLAT_ERROR("Incorrect flat");
 
     private final String message;
 
