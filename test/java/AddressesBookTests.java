@@ -45,8 +45,7 @@ public class AddressesBookTests {
 
     @Test
     void nullNameAddMember() {
-        Throwable exception = assertThrows(NullPointerException.class, () -> addressBook.addMember(null, address1));
-        assertEquals(ILLEGAL_NAME_ERROR.getMessage(), exception.getMessage());
+        assertThrows(NullPointerException.class, () -> addressBook.addMember(null, address1));
     }
 
     @Test
@@ -58,7 +57,8 @@ public class AddressesBookTests {
 
     @Test
     void illegalStreetAddMember() {
-        Throwable exception = assertThrows(BadValueException.class, () -> addressBook.addMember("Petya", new AddressesBook.Address("Mendeleeva!", 2, 28)));
+        Throwable exception = assertThrows(BadValueException.class, () -> addressBook.addMember("Petya",
+                new AddressesBook.Address("Mendeleeva!", 2, 28)));
         assertEquals(ILLEGAL_STREET_ERROR.getMessage(), exception.getMessage());
     }
 
@@ -134,7 +134,7 @@ public class AddressesBookTests {
 
     @Test
     void getMemberByStreet() {
-        Set<String> suitableMembers = new HashSet<>(Set.of("Petya"));
+        Set<String> suitableMembers = Set.of("Petya");
         assertEquals(
                 suitableMembers,
                 addressBook.getMemberListByStreet("Mendeleeva")
@@ -143,7 +143,7 @@ public class AddressesBookTests {
 
     @Test
     void getMemberByStreetAndHouse() {
-        Set<String> suitableMembers = new HashSet<>(Set.of("Petya"));
+        Set<String> suitableMembers = Set.of("Petya");
         assertEquals(
                 suitableMembers,
                 addressBook.getMemberListByStreetAndHouse("Mendeleeva", 2)

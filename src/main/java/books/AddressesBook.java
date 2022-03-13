@@ -1,5 +1,8 @@
 package books;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,37 +14,14 @@ public class AddressesBook {
     private static final Pattern checkWordPattern = Pattern.compile("[0-9:?;!]");
 
     public static class Address {
+        // statiс, потому что это позволяет создавать экземпляр класса без создания экземпляра суперкласса
         private String street;
         private Integer house, flat;
 
         public Address(String street, Integer house, Integer flat) throws BadValueException {
-
-            if (street == null) {
-                throw new NullPointerException(ILLEGAL_STREET_ERROR.getMessage());
-            } else {
-                this.street = street;
-            }
-
-            if (house == null) {
-                throw new NullPointerException(ILLEGAL_HOUSE_ERROR.getMessage());
-            } else if (house <= 0) {
-                throw new BadValueException(ILLEGAL_HOUSE_ERROR.getMessage());
-            } else {
-                this.house = house;
-            }
-
-            if (wordCheck(street)) {
-                throw new BadValueException(ILLEGAL_STREET_ERROR.getMessage());
-            }
-
-            if (flat == null) {
-                throw new NullPointerException(ILLEGAL_FLAT_ERROR.getMessage());
-            } else if (flat <= 0) {
-                throw new BadValueException(ILLEGAL_FLAT_ERROR.getMessage());
-            } else {
-                this.flat = flat;
-            }
-
+            this.setStreet(street);
+            this.setHouse(house);
+            this.setFlat(flat);
         }
 
         @Override
@@ -54,7 +34,8 @@ public class AddressesBook {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Address address = (Address) o;
-            return Objects.equals(street, address.street) && Objects.equals(house, address.house) && Objects.equals(flat, address.flat);
+            return Objects.equals(street, address.street) && Objects.equals(house, address.house)
+                    && Objects.equals(flat, address.flat);
         }
 
         @Override
@@ -66,9 +47,12 @@ public class AddressesBook {
             return street;
         }
 
-        public void setStreet(String street) {
+        public void setStreet(String street) throws BadValueException {
+
             if (street == null) {
                 throw new NullPointerException(ILLEGAL_STREET_ERROR.getMessage());
+            } else if (wordCheck(street)) {
+                throw new BadValueException(ILLEGAL_STREET_ERROR.getMessage());
             } else {
                 this.street = street;
             }
@@ -109,9 +93,6 @@ public class AddressesBook {
     }
 
     public boolean addMember(String name, Address address) throws BadValueException {
-        if (name == null) {
-            throw new NullPointerException(ILLEGAL_NAME_ERROR.getMessage());
-        }
 
         if (wordCheck(name)) {
             throw new BadValueException(ILLEGAL_NAME_ERROR.getMessage());
@@ -143,10 +124,12 @@ public class AddressesBook {
         }
     }
 
-    public Address getAddress(String name) {
-        return members.getOrDefault(name, null);
+    @Nullable
+    public Address getAddress( String name) {
+        return members.get(name);
     }
 
+    @NotNull
     public Set<String> getMemberListByStreet(String street) {
         Set<String> suitableMembers = new HashSet<>();
 
@@ -159,6 +142,7 @@ public class AddressesBook {
         return suitableMembers;
     }
 
+    @NotNull
     public Set<String> getMemberListByStreetAndHouse(String street, Integer house) {
         Set<String> suitableMembers = new HashSet<>();
         for (Map.Entry<String, Address> entry : members.entrySet()) {
@@ -174,7 +158,8 @@ public class AddressesBook {
     public String toString() {
         StringBuilder string = new StringBuilder();
         for (Map.Entry<String, Address> entry : members.entrySet()) {
-            string.append(entry.getKey()).append(" address is ").append(entry.getValue().toString()).append(".").append(System.lineSeparator());
+            string.append(entry.getKey()).append(" address is ").append(entry.getValue().toString()).append(".")
+                    .append(System.lineSeparator());
         }
         return string.toString();
     }
@@ -193,3 +178,4 @@ public class AddressesBook {
     }
 }
 
+// maven, static
